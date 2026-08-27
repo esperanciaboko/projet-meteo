@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- 1. Un titre et un bouton en HTML -->
+    <h1 id="monTitre">Bonjour !</h1>
+    <button id="monBouton">Changer le texte</button>
+
+
+    <input type="text" placeholder="votre prénom" id="country">
+    <button id="whistle">Cliquez ici</button>
+    <p id="message"></p>
+    
+    <!-- 2. Le code JavaScript -->
+    <script>
+        // A. On sélectionne le titre et le bouton
+        const titre = document.getElementById('monTitre');
+        const bouton = document.getElementById('monBouton');
+
+        // B. On dit à JS : quand on CLIQUE sur le bouton...
+        bouton.addEventListener('click', function() {
+            // C. ...change le texte du titre !
+            titre.textContent = "Bravo, vous avez utilisé JavaScript ! 🎉";
+        });
+
+        // D
+        const firstname=document.getElementById("country");
+        const boutton=document.getElementById("whistle");
+        const messager=document.getElementById("message")
+        // E
+        boutton.addEventListener("click", function() {
+            const prenom=firstname.value;
+            messager.textContent="Bonjour"+prenom;
+
+        })
+
+
+    </script>
+    
+</body>
+</html>
