@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Météo</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
         .btn:hover {
             
             background-image: linear-gradient(to right, #40c4ff, #80d8ff, #e0f7ff) !important;
-            transform: scale(1.03);
+            
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre douce sous le bouton */
             color: #002752 !important;
         }
@@ -39,7 +39,21 @@
 
 <body class="bg-light d-flex justify-content-center align-items-center min-vh-100 m-0">
     
-    <div class="card p-4 shadow border-0 rounded-4" style="max-width: 450px; width: 100%;">
+    <div class="card p-3 p-sm-4 shadow border-0 rounded-4 position-relative" style="max-width: 480px; width: 100%;">
+
+        <!-- Toast Flottant à cheval sur le bord supérieur -->
+        <div class="toast-container position-absolute top-0 start-50 translate-middle z-3" style="width: 85%;">
+            <div id="toast-meteo" class="toast align-items-center text-bg-success border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body p-2 text-center w-100" id="toast-message" style="font-size: 12px;">
+                        <!-- Le texte dynamique s'affichera ici -->
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+
         <h4 class="text-center mb-3"><span class="badge rounded-pill bg-info"><i class="bi bi-cloud-sun me-2"></i>METEO</span></h4>
         
 
@@ -47,7 +61,7 @@
         <form id="rock">
             <div class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Entrez le nom d'une ville..." id="ville" required>
-                <button class="btn" type="submit" id="button-addon2" style="background-image: linear-gradient(to right, #e0f7ff, #80d8ff, #40c4ff); color: #000; border: none;"><i class="bi bi-search me-2"></i>Rechercher</button>
+                <button class="btn" type="submit" id="button-addon2" style="background-image: linear-gradient(to right, #e0f7ff, #80d8ff, #40c4ff); color: #000; border: none;"><i class="bi bi-search me-1 me-sm-2"></i><span class="d-none d-sm-inline">Rechercher</span></button>
             </div>
         </form>
             
@@ -59,7 +73,8 @@
         </div>
     </div>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>   
+    
     <script>
         const formulaire = document.getElementById("rock");
         const bouton = document.getElementById("button-addon2");
@@ -72,66 +87,106 @@
                 const reponse = await fetch(`https://wttr.in/${encodeURIComponent(ville)}?format=j1`);
                 
                 if (!reponse.ok) {
-                    throw new Error ('Erreur HTTP (code ${reponse.status})');
+                    throw new Error (`Erreur HTTP (code ${reponse.status})`);
                 }
 
                 const donnees = await reponse.json();
 
 
                 carteMeteo.innerHTML = `
-                    <div class="d-flex flex-column gap-3">
-                        <div class="d-flex overflow-hidden align-items-center justify-content-center rounded-3 ms-2 me-2" >
-                            <div class="w-50 bg-info">
-                                <p class="text-light text-center" style="font-weight: bold; font-size: 17px; padding: 13px;"><i class="bi bi-globe-americas text-light me-2" style="width: 24px; text-align: center;"></i>Pays:</p>
+                    <div class="d-flex flex-column gap-3 gap-sm-3">
+
+                        <!--Pays-->
+                        <div class="d-flex overflow-hidden align-items-stretch rounded-3 ms-2 me-2 ms-sm-2 me-sm-2" >
+                            <div class="row w-50 g-0 bg-info align-items-center p-2 p-sm-3">
+                                <div class="col-3 text-center">
+                                    <i class="bi bi-globe-americas text-light fs-5"></i>
+                                </div>
+                                <div class="col-9 p-0">
+                                    <p class="text-light m-0" style="font-weight: bold; font-size: 15px;">Pays:</p>
+                                </div>
                             </div>
-                            <div class="w-50 bg-light">
-                                <p class="text-info fw-semibold text-center" style="padding: 13px;">${donnees.nearest_area[0].country[0].value}</p>
+                            <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
+                                <p class="text-info fw-semibold text-center m-0">${donnees.nearest_area[0].country[0].value}</p>
                             </div>
                         </div>
                         
-                        <div class="d-flex overflow-hidden align-items-center justify-content-center rounded-3 ms-2 me-2" >
-                            <div class="w-50 bg-info">
-                                <p class="text-light text-center" style="font-weight: bold; font-size: 17px; padding: 13px;"><i class="bi bi-map-fill text-light me-2" style="width: 24px; text-align: center;"></i>Région:</p>
+                        <!--Region-->
+                        <div class="d-flex overflow-hidden align-items-stretch rounded-3 ms-1 me-1 ms-sm-2 me-sm-2" >
+                            <div class="row w-50 g-0 bg-info align-items-center p-2 p-sm-3">
+                                <div class="col-3 text-center">
+                                    <i class="bi bi-map-fill text-light fs-5"></i>
+                                </div>
+                                <div class="col-9 p-0">
+
+                                    <p class="text-light m-0" style="font-weight: bold; font-size: 15px;">Région:</p>
+                                </div>
                             </div>
-                            <div class="w-50 bg-light">
-                                <p class="text-info text-center fw-semibold " style="padding: 13px;">${donnees.nearest_area[0].region[0].value}</p>
+                            <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
+                                <p class="text-info text-center fw-semibold m-0">${donnees.nearest_area[0].region[0].value}</p>
                             </div>
                         </div>
 
-                        <div class="d-flex overflow-hidden align-items-center justify-content-center rounded-3 ms-2 me-2" >
-                            <div class="w-50 bg-info">
-                                <p class="text-light text-center" style="font-weight: bold; font-size: 17px; padding: 13px;"><i class="bi bi-map-fill text-light me-2" style="width: 24px; text-align: center;"></i>Ville:</p>
+                        <!--Ville-->
+                        <div class="d-flex overflow-hidden align-items-stretch rounded-3 ms-1 me-1 ms-sm-2 me-sm-2" >
+                            <div class="row w-50 g-0 bg-info align-items-center p-2 p-sm-3">
+                                <div class="col-3 text-center">
+                                    <i class="bi bi-geo-alt-fill text-light fs-5"></i>
+                                </div>
+                                <div class="col-9 p-0">
+                                    <p class="text-light m-0" style="font-weight: bold; font-size: 15px;">Ville:</p>
+                            
+                                </div>
                             </div>
-                            <div class="w-50 bg-light">
-                                <p class="text-info text-center fw-semibold" style="padding: 13px;">${donnees.nearest_area[0].areaName[0].value}</p>
-                            </div>
-                        </div>
-
-                        <div class="d-flex overflow-hidden align-items-center justify-content-center rounded-3 ms-2 me-2" >
-                            <div class="w-50 bg-info" >
-                                <p class="text-light text-center" style="font-weight: bold; font-size: 17px; padding: 13px;"><i class="bi bi-thermometer-half text-light me-2" style="width: 24px; text-align: center;"></i>Température:</p>
-                            </div>
-                            <div class="w-50 bg-light">
-                                <p class="text-info text-center fw-semibold" style="padding: 13px;">${donnees.current_condition[0].temp_C}°C</p>
+                            <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
+                                <p class="text-info text-center fw-semibold m-0">${donnees.nearest_area[0].areaName[0].value}</p>
                             </div>
                         </div>
 
-
-                        <div class="d-flex overflow-hidden align-items-center justify-content-center rounded-3 ms-2 me-2" >
-                            <div class="w-50 bg-info">
-                                <p class="text-light text-center" style="font-weight: bold; font-size: 17px; padding: 13px;"><i class="bi bi-droplet text-light me-2" style="width: 24px; text-align: center;"></i>Humidité:</p>
+                        <!--Température-->
+                        <div class="d-flex overflow-hidden align-items-stretch rounded-3 ms-1 me-1 ms-sm-2 me-sm-2" >
+                            <div class="row w-50 g-0 bg-info align-items-center p-2 p-sm-3" >
+                                <div class="col-3 text-center">
+                                    <i class="bi bi-thermometer-half text-light fs-5"></i>
+                                </div>
+                                <div class="col-9 p-0">
+                                    <p class="text-light m-0" style="font-weight: bold; font-size: 15px;">Température:</p>
+                                </div>
                             </div>
-                            <div class="w-50 bg-light">
-                                <p class="text-info text-center fw-semibold" style="padding: 13px;">${donnees.current_condition[0].humidity}%</p>
+                            <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
+                                <p class="text-info text-center fw-semibold m-0">${donnees.current_condition[0].temp_C}°C</p>
                             </div>
                         </div>
 
-                        <div class="d-flex overflow-hidden align-items-center justify-content-center rounded-3 ms-2 me-2" >
-                            <div class="w-50 bg-info">
-                                <p class="text-light text-center" style="font-weight: bold; font-size: 17px; padding: 13px;"><i class="bi bi-wind text-light me-2" style="width: 24px; text-align: center;"></i>Vent:</p>
+                        <!--Humidité-->
+                        <div class="d-flex overflow-hidden align-items-stretch rounded-3 ms-1 me-1 ms-sm-2 me-sm-2" >
+                            <div class="row w-50 g-0 bg-info align-items-center p-2 p-sm-3">
+                                <div class="col-3 text-center">
+                                    <i class="bi bi-droplet text-light fs-5"></i>
+                                </div>
+                                <div class="col-9 p-0">
+                                
+                                    <p class=" text-light m-0" style="font-weight: bold; font-size: 15px;">Humidité:</p>
+                            
+                                </div>
                             </div>
-                            <div class="w-50 bg-light">
-                                <p class="text-info text-center fw-semibold" style="padding: 13px;">${donnees.current_condition[0].windspeedKmph} km/h</p>
+                            <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
+                                <p class="text-info text-center fw-semibold m-0">${donnees.current_condition[0].humidity}%</p>
+                            </div>
+                        </div>
+
+                        <!--Vent-->
+                        <div class="d-flex overflow-hidden align-items-stretch rounded-3 ms-1 me-1 ms-sm-2 me-sm-2" >
+                            <div class="row w-50 g-0 bg-info align-items-center p-2 p-sm-3">
+                                <div class="col-3 text-center">
+                                    <i class="bi bi-wind text-light fs-5"></i>
+                                </div>
+                                <div class="col-9 p-0">
+                                    <p class="text-light m-0" style="font-weight: bold; font-size: 15px;">Vent:</p>
+                                </div>
+                            </div>
+                            <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
+                                <p class="text-info text-center fw-semibold m-0"">${donnees.current_condition[0].windspeedKmph} km/h</p>
                             </div>
                         
                         </div>
@@ -139,6 +194,14 @@
                     </div>
                 `
                 carteMeteo.classList.remove("d-none");
+
+                // Mise à jour du message et déclenchement du Toast
+                const toastMessage = document.getElementById("toast-message");
+                toastMessage.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Données du ${donnees.weather[0].date} à ${donnees.current_condition[0].observation_time} UTC`;
+
+                const toastElement = document.getElementById("toast-meteo");
+                const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                toast.show();
 
             } catch (error) {
                 carteMeteo.innerHTML = `
