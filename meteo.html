@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,12 +37,12 @@
     
 </head>
 
-<body class="bg-light d-flex justify-content-center align-items-center min-vh-100 m-0">
+<body class="bg-light d-flex justify-content-center align-items-center min-vh-100 m-0 pt-3 pt-sm-5 pb-2">
     
     <div class="card p-3 p-sm-4 shadow border-0 rounded-4 position-relative" style="max-width: 480px; width: 100%;">
 
         <!-- Toast Flottant à cheval sur le bord supérieur -->
-        <div class="toast-container position-absolute top-0 start-50 translate-middle z-3" style="width: 85%;">
+        <div class="toast-container position-fixed top-0 start-50 translate-middle-x z-3" style="width: 85%; max-width: 400px;">
             <div id="toast-meteo" class="toast align-items-center text-bg-success border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="d-flex">
                     <div class="toast-body p-2 text-center w-100" id="toast-message" style="font-size: 12px;">
@@ -54,12 +54,12 @@
         </div>
 
 
-        <h4 class="text-center mb-3"><span class="badge rounded-pill bg-info"><i class="bi bi-cloud-sun me-2"></i>METEO</span></h4>
+        <h4 class="text-center position-absolute start-50 translate-middle-x" style="top: -19px;"><span class="badge rounded-pill bg-info"><i class="bi bi-cloud-sun me-2"></i>METEO</span></h4>
         
 
         <!-- Barre de recherche complète -->
         <form id="rock">
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 mt-3">
                 <input type="text" class="form-control" placeholder="Entrez le nom d'une ville..." id="ville" required>
                 <button class="btn" type="submit" id="button-addon2" style="background-image: linear-gradient(to right, #e0f7ff, #80d8ff, #40c4ff); color: #000; border: none;"><i class="bi bi-search me-1 me-sm-2"></i><span class="d-none d-sm-inline">Rechercher</span></button>
             </div>
@@ -90,7 +90,16 @@
                     throw new Error (`Erreur HTTP (code ${reponse.status})`);
                 }
 
+                
                 const donnees = await reponse.json();
+                const country = donnees.nearest_area?.[0]?.country?.[0]?.value || "Indisponible";
+                const area = donnees.nearest_area?.[0]?.region?.[0]?.value || "Indisponible";
+                const town = donnees.nearest_area?.[0]?.areaName?.[0]?.value || "Indisponible";
+                const temp = donnees.current_condition?.[0]?.temp_C || "Indisponible";
+                const cold = donnees.current_condition?.[0]?.humidity || "Indisponible";
+                const wind = donnees.current_condition?.[0]?.windspeedKmph || "Indisponible";
+                const description = donnees.current_condition?.[0]?.lang_fr?.[0]?.value || donnees.current_condition?.[0]?.weatherDesc?.[0]?.value || "Non disponible";
+                const luck = donnees?.weather?.[0]?.hourly?.[0]?.chanceofrain || "0";
 
 
                 carteMeteo.innerHTML = `
@@ -107,7 +116,7 @@
                                 </div>
                             </div>
                             <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
-                                <p class="text-info fw-semibold text-center m-0">${donnees.nearest_area[0].country[0].value}</p>
+                                <p class="text-info fw-semibold text-center m-0">${country}</p>
                             </div>
                         </div>
                         
@@ -123,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
-                                <p class="text-info text-center fw-semibold m-0">${donnees.nearest_area[0].region[0].value}</p>
+                                <p class="text-info text-center fw-semibold m-0">${area}</p>
                             </div>
                         </div>
 
@@ -139,7 +148,7 @@
                                 </div>
                             </div>
                             <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
-                                <p class="text-info text-center fw-semibold m-0">${donnees.nearest_area[0].areaName[0].value}</p>
+                                <p class="text-info text-center fw-semibold m-0">${town}</p>
                             </div>
                         </div>
 
@@ -154,7 +163,7 @@
                                 </div>
                             </div>
                             <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
-                                <p class="text-info text-center fw-semibold m-0">${donnees.current_condition[0].temp_C}°C</p>
+                                <p class="text-info text-center fw-semibold m-0">${temp}${temp !=="Indisponible" ? "°C" : ""}</p>
                             </div>
                         </div>
 
@@ -171,7 +180,7 @@
                                 </div>
                             </div>
                             <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
-                                <p class="text-info text-center fw-semibold m-0">${donnees.current_condition[0].humidity}%</p>
+                                <p class="text-info text-center fw-semibold m-0">${cold}${cold !=="Indisponible" ? "%" : ""}</p>
                             </div>
                         </div>
 
@@ -186,10 +195,14 @@
                                 </div>
                             </div>
                             <div class="w-50 bg-light d-flex align-items-center justify-content-center p-2 p-sm-3">
-                                <p class="text-info text-center fw-semibold m-0"">${donnees.current_condition[0].windspeedKmph} km/h</p>
+                                <p class="text-info text-center fw-semibold m-0">${wind}${wind !=="Indisponible" ? "km/h" : ""}</p>
                             </div>
                         
                         </div>
+
+                        <div class="rounded-3 w-100 h-auto align-items-center justify-content-center" style="background-image: linear-gradient(to bottom, #40c4ff, #80d8ff, #e0f7ff);">
+                            <p class="p-3 mb-0 fw-bold" style="font-size: 17px;">Cette ville est sous la condition suivante: <strong>${description}</strong> avec <strong>${luck}%</strong> de risque de pluie.</p>
+                        </div> 
             
                     </div>
                 `
@@ -197,7 +210,14 @@
 
                 // Mise à jour du message et déclenchement du Toast
                 const toastMessage = document.getElementById("toast-message");
-                toastMessage.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Données du ${donnees.weather[0].date} à ${donnees.current_condition[0].observation_time} UTC`;
+                const date = donnees.weather?.[0]?.date;
+                const hour = donnees.current_condition?.[0]?.observation_time;
+                if (date && hour) {
+                    toastMessage.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Données du ${date} à ${hour} UTC`;
+
+                } else {
+                    toastMessage.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Données météo récupérées avec succès`;
+                }
 
                 const toastElement = document.getElementById("toast-meteo");
                 const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
