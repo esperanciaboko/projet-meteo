@@ -1,0 +1,63 @@
+body {
+
+    background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77) !important;
+}
+
+#sky {
+    max-width: 480px; 
+    width: 100%;
+}
+
+#toast-start {
+    width: 85%; 
+    max-width: 400px;
+}
+
+#toast-message {
+    font-size: 12px;
+}
+
+
+
+.btn:hover {
+            
+    background-image: linear-gradient(to right, #40c4ff, #80d8ff, #e0f7ff) !important;
+            
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre douce sous le bouton */
+    color: #002752 !important;
+}
+
+#title {
+    background-color: #b5e6f7;
+    border-radius: 25px;
+    top: -19px;
+    margin: 0 !important;
+    
+    
+            
+}
+
+#button-addon2 {
+    background-image: linear-gradient(to right, #e0f7ff, #80d8ff, #40c4ff); color: #000;
+    border: none;
+}
+
+li {
+    list-style-type: none;
+    font-weight: bold;
+}
+
+        
+
+.subtitle {
+    font-weight: bold; 
+    font-size: 15px;
+}
+
+#describe {
+    background-image: linear-gradient(to bottom, #40c4ff, #80d8ff, #e0f7ff);
+}
+
+#describing {
+    font-size: 17px;
+}
