@@ -30,10 +30,11 @@ async function geocoder(saisie) {
     const resultats = await reponse.json();
     if (!resultats.length) throw new Error("VILLE_INTROUVABLE");
 
-    // ⭐ On privilégie les VRAIES villes
+    // On privilégie les VRAIES villes
     const TYPES_VILLE = ["city", "town", "village", "municipality", "administrative"];
+    const TYPES_ADRESSTYPE = ["city", "town", "village", "municipality"];
     const lieu = resultats.find(r =>
-        TYPES_VILLE.includes(r.type) || TYPES_VILLE.includes(r.addresstype)
+        TYPES_VILLE.includes(r.type) && TYPES_ADRESSTYPE.includes(r.addresstype)
     );
 
     if (!lieu) throw new Error("PAS_UNE_VILLE");
